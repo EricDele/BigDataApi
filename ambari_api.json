@@ -1,0 +1,32 @@
+{
+  "api": {
+    "putQueuesInAmbari": "/api/v1/views/CAPACITY-SCHEDULER/versions/1.0.0/instances/AUTO_CS_INSTANCE/resources/scheduler/configuration",
+    "getQueuesFromAmbari": "/api/v1/views/CAPACITY-SCHEDULER/versions/1.0.0/instances/AUTO_CS_INSTANCE/resources/scheduler/configuration",
+    "saveAndRefresh": "/api/v1/views/CAPACITY-SCHEDULER/versions/1.0.0/instances/AUTO_CS_INSTANCE/resources/scheduler/configuration/saveAndRefresh",
+    "getAdminViewVersion": "/api/v1/views/ADMIN_VIEW",
+    "getClusterName": "/api/v1/clusters",
+    "getClusterStatus": "/api/v1/clusters/%%yourClusterName%%/host_components?HostRoles/stale_configs=false&fields=HostRoles/service_name,HostRoles/state,HostRoles/host_name,HostRoles/stale_configs,&minimal_response=true",
+    "getClusterStaleConfig": "/api/v1/clusters/%%yourClusterName%%/host_components?HostRoles/stale_configs=true&fields=HostRoles/service_name,HostRoles/state,HostRoles/host_name,HostRoles/stale_configs,&minimal_response=true",
+    "getResourceManagerHosts": "/api/v1/clusters/%%yourClusterName%%/services/YARN/components/RESOURCEMANAGER?fields=host_components/host_name",
+    "putRefreshQueues": "/api/v1/clusters/%%yourClusterName%%/requests/"
+  },
+  "yourClusterName": "%%yourClusterName%%",
+  "headers-by-version": {
+    "2.6": {
+      "Content-Type": "text/plain",
+      "X-Requested-By": "ambari"
+    },
+    "2.4": {
+      "Content-Type": "text/plain",
+      "X-Requested-By": "ambari"
+    },
+    "2.2": {
+      "Content-Type": "application/json",
+      "X-Requested-By": "ambari"
+    },
+    "default": {
+      "Content-Type": "application/json",
+      "X-Requested-By": "ambari"
+    }
+  }
+}
