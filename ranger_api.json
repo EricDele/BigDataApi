@@ -1,0 +1,17 @@
+{
+  "api": {
+    "getUsers": "/service/xusers/users",
+    "getUserByName": "/service/xusers/users?name=",
+    "getUserById": "/service/xusers/users/",
+    "getGroups": "/service/xusers/groups",
+    "getGroupByName": "/service/xusers/groups?name=",
+    "getGroupById": "/service/xusers/groups/",
+    "getServices": "/service/public/api/repository",
+    "getServiceById": "/service/public/v2/api/service/",
+    "getServiceByName": "/service/public/v2/api/service/name/",
+    "getPolicies": "/service/public/api/policy",
+    "getPolicyByName": "/service/public/api/policy?policyName=",
+    "getPolicyById": "/service/public/api/policy/"
+
+  }
+}

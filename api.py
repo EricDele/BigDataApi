@@ -7,7 +7,6 @@ from collections import defaultdict
 import json
 import pkg_resources
 from packaging import version
-from getpass import getpass
 
 # Imports for http requests and Authent
 import requests
@@ -83,13 +82,22 @@ class Api(object):
 
     def checkReturnCode(self):
         if(self._r.status_code != 200):
+            try:
+                json_object = self._r.json()
+            except ValueError, e:
+                raise ApiError("\nHTTP Error code {}\nReturned after calling {} {} \nAuthentification : {}\nData : \n{}\n".format(self._r.status_code, self._methode, self._url, self._authenticationMethode, self._r.text))
             raise ApiError("\nHTTP Error code {}\nReturned after calling {} {} \nAuthentification : {}\nData : \n{}\n".format(self._r.status_code, self._methode, self._url, self._authenticationMethode, json.dumps(self._r.json(), indent=2)))
 
     def callApi(self):
         if(self._methode not in ["get", "put", "post", "delete"]):
             raise ApiError("Methode for calling API should be one of : GET, PUT, POST or DELETE")
+        # Call the requests.<self._methode> using getattr
         self._r = getattr(requests, self._methode)(self._url, auth=self._authentication, headers=self._headers, data=self._data, verify=False)
         self.checkReturnCode()
 
     def __str__(self):
+        try:
+            json_object = self._r.json()
+        except ValueError, e:
+            return "Url : {} {} \nAuthentification : {}\nData in : {}\nResult : \n{}\n".format(self._methode, self._url, self._authenticationMethode, self._data, self._r.text)
         return "Url : {} {} \nAuthentification : {}\nData in : {}\nResult : \n{}\n".format(self._methode, self._url, self._authenticationMethode, self._data, json.dumps(self._r.json(), indent=2))
