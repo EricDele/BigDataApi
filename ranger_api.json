@@ -10,8 +10,11 @@
     "getServiceById": "/service/public/v2/api/service/",
     "getServiceByName": "/service/public/v2/api/service/name/",
     "getPolicies": "/service/public/api/policy",
-    "getPolicyByName": "/service/public/api/policy?policyName=",
-    "getPolicyById": "/service/public/api/policy/"
+    "getPolicyByName": "/service/public/api/policy?policyName=",    
+    "getPolicyById": "/service/public/api/policy/",
+    "getV2Services": "/service/public/v2/api/service",
+    "getV2PolicyByServiceAndPolicyName": "/service/public/v2/api/service/{service-name}/policy/{policy-name}",
+    "getV2SearchPolicyInService": "/service/public/v2/api/service/{service-name}/policy"
 
   }
 }

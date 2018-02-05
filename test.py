@@ -4,6 +4,7 @@
 from ambari import AmbariApi
 from ranger import RangerApi
 
+
 def testAmbari():
     ambariApi = AmbariApi("http", "127.0.0.1", "8080", "basic")
     ambariApi.setCredentialsBasic("admin", "hortonworks")
@@ -29,9 +30,13 @@ def testAmbari():
     result = ambariApi.postServiceCheck("HDFS")
     print(ambariApi)
 
+
 def testRanger():
     rangerApi = RangerApi("http", "127.0.0.1", "6080", "basic")
     rangerApi.setCredentialsBasic("raj_ops", "raj_ops")
+
+    # Test RANGER API V1
+
     result = rangerApi.getServices()
     print(rangerApi)
 
@@ -50,7 +55,19 @@ def testRanger():
     result = rangerApi.getService("Sandbox_hadoop")
     print(rangerApi)
 
+    # Test RANGER API V2
+
+    result = rangerApi.getV2Services()
+    print(rangerApi)
+
+    result = rangerApi.getV2PolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
+    print(rangerApi)
+
+    result = rangerApi.getV2SearchPolicyInService("Sandbox_hadoop", "HDFS Global Allow")
+    print(rangerApi)
+
     # API for Users and groups management return an XML object
+
     result = rangerApi.getUsers()
     print(result)
 
@@ -68,6 +85,7 @@ def testRanger():
 
     result = rangerApi.getGroup(12)
     print(result)
+
 
 if __name__ == '__main__':
     # testAmbari()

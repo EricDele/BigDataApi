@@ -60,6 +60,8 @@ class RangerApi(Api):
         self.callApi()
         return self._r
 
+    # API for Users and groups management return an XML object
+
     def getUsers(self):
         """
         get the users
@@ -97,6 +99,8 @@ class RangerApi(Api):
         result = self._getGenericMethode(url)
         return xml.dom.minidom.parseString(self._r.text).toprettyxml()
 
+    # API V1 ##################################
+
     def getServices(self):
         """
         get the services
@@ -130,5 +134,40 @@ class RangerApi(Api):
             url = self._api[inspect.currentframe().f_code.co_name + "ByName"] + policy
         else:
             url = self._api[inspect.currentframe().f_code.co_name + "ById"] + str(policy)
+        result = self._getGenericMethode(url)
+        return result
+
+    # API V2 ##################################
+
+    def getV2Services(self, serviceType=""):
+        """
+        get the services
+
+        serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
+        """
+        if(serviceType == ""):
+            urlSuffix = ""
+        else:
+            urlSuffix = "?serviceType=" + serviceType
+        result = self._getGenericMethode(self._api[inspect.currentframe().f_code.co_name] + urlSuffix)
+        return result
+
+    def getV2PolicyByServiceAndPolicyName(self, service, policy):
+        """
+        get a policy by Service and Policy Name
+        """
+        url = self._api[inspect.currentframe().f_code.co_name].replace('{service-name}', service).replace('{policy-name}', policy)
+        result = self._getGenericMethode(url)
+        return result
+
+    def getV2SearchPolicyInService(self, service, policy=""):
+        """
+        get a search on policy in a service
+        """
+        if(policy == ""):
+            urlSuffix = ""
+        else:
+            urlSuffix = "?policyName=" + policy
+        url = self._api[inspect.currentframe().f_code.co_name].replace('{service-name}', service) + urlSuffix
         result = self._getGenericMethode(url)
         return result
