@@ -3,7 +3,6 @@
 
 
 # Imports for general purpose
-from collections import defaultdict
 import json
 import pkg_resources
 from packaging import version
@@ -12,7 +11,8 @@ from packaging import version
 import requests
 from requests.auth import HTTPBasicAuth
 from requests_kerberos import HTTPKerberosAuth, REQUIRED
-
+# https://pypi.python.org/pypi/requests-kerberos/0.11.0
+# Should look at https://krbcontext.github.io/usage.html for generate tgt with keytab
 
 class ApiError(Exception):
     """
@@ -81,7 +81,10 @@ class Api(object):
         self._data = data
 
     def checkReturnCode(self):
-        if(self._r.status_code != 200):
+        """
+        Check the HTTP response code, see https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
+        """
+        if(self._r.status_code > 302):
             try:
                 json_object = self._r.json()
             except ValueError, e:

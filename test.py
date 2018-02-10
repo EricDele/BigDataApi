@@ -63,30 +63,57 @@ def testRanger():
     result = rangerApi.getV2PolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
     print(rangerApi)
 
+    result = rangerApi.getV2PolicyByServiceAndPolicyName("Sandbox_hive", "all - database, table, column")
+    print(rangerApi)
+
     result = rangerApi.getV2SearchPolicyInService("Sandbox_hadoop", "HDFS Global Allow")
     print(rangerApi)
 
-    # API for Users and groups management return an XML object
+    result = rangerApi.postV2CreatePolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], True, "it1", "", "r--")
+    print(rangerApi)
+
+    result = rangerApi.postV2ApplyPolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "r-x")
+    print(rangerApi)
+
+    result = rangerApi.putV2UpdatePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "r--")
+    print(rangerApi)
+
+    result = rangerApi.deleteV2DeletePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
+    print(rangerApi)
+
+    # API for Users and groups management
 
     result = rangerApi.getUsers()
-    print(result)
+    print(rangerApi)
 
-    result = rangerApi.getUser("guest")
-    print(result)
+    result = rangerApi.createUser("user77", "user77", "user77", "user77", "user77", "user77", [2], ["ROLE_USER"])
+    print(rangerApi)
 
-    result = rangerApi.getUser(48)
-    print(result)
+    result = rangerApi.getUser("user77")
+    print(rangerApi)
+
+    result = rangerApi.setRoleForUser("user77", "ROLE_SYS_ADMIN")
+    print(rangerApi)
+
+    result = rangerApi.getUser("user77")
+    print(rangerApi)
+
+    result = rangerApi.deleteUser("user77")
+    print(rangerApi)
+
+    result = rangerApi.getUser("user77")
+    print(rangerApi)
 
     result = rangerApi.getGroups()
-    print(result)
+    print(rangerApi)
 
     result = rangerApi.getGroup("admin")
-    print(result)
+    print(rangerApi)
 
     result = rangerApi.getGroup(12)
-    print(result)
+    print(rangerApi)
 
 
 if __name__ == '__main__':
-    # testAmbari()
+    testAmbari()
     testRanger()
