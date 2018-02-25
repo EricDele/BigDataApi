@@ -157,6 +157,9 @@ class AmbariApi(api.Api)
  |  getClusterName(self)
  |      get the cluster name and call the setClusterName methode
  |  
+ |  getClusterServices(self)
+ |      get the cluster sercvice status
+ |  
  |  getClusterStaleConfig(self)
  |      get the cluster service having stale config
  |  
@@ -166,15 +169,42 @@ class AmbariApi(api.Api)
  |  getQueuesFromAmbari(self)
  |      get the capacity scheduler queues from Ambari
  |  
+ |  getRequestStatus(self, requestId)
+ |      get the status of a request
+ |  
+ |  getRequests(self)
+ |      get all the requests
+ |  
  |  getResourceManagerHosts(self)
  |      get the cluster resource manager hosts
  |  
- |  postServiceCheck(self, serviceName)
- |      post a service check
+ |  postAllServicesCheck(self)
+ |      post all services check
+ |  
+ |  putAbortStuckRequest(self, requestId)
+ |      put a request abort for a stuck request
+ |  
+ |  putClusterServiceStart(self, serviceName)
+ |      put a start for a service
+ |  
+ |  putClusterServiceStartAll(self)
+ |      put a start for all services
+ |      retrun an array of requestsId
+ |  
+ |  putClusterServiceStop(self, serviceName)
+ |      put a stop for a service
+ |  
+ |  putClusterServiceStopAll(self)
+ |      put a stop for all services
+ |      retrun an array of requestsId
  |  
  |  setClusterName(self, clusterName)
  |      set the cluster name and update the api path replaicng the mask by the real name
  |  
+ |  waitUntilRequestsCompleted(self, requestId)
+ |      Will wait until all the requests are completed
+ |  
+
 ```
 ### How to use it
 
