@@ -18,6 +18,22 @@ def testAmbari():
     result = ambariApi.getClusterStatus()
     print(ambariApi)
 
+    result = ambariApi.getClusterServices()
+    for item in result.json()["items"]:
+        print(item["ServiceInfo"]["service_name"])
+
+    result = ambariApi.putClusterServiceStart("OOZIE")
+    result = ambariApi.getRequestStatus(result.json()["Requests"]["id"])
+
+    result = ambariApi.putClusterServiceStop("OOZIE")
+    ambariApi.waitUntilRequestsCompleted(result.json()["Requests"]["id"])
+
+    resultArray = ambariApi.putClusterServiceStopAll()
+    ambariApi.waitUntilRequestsCompleted(resultArray)
+
+    resultArray = ambariApi.putClusterServiceStartAll()
+    ambariApi.waitUntilRequestsCompleted(resultArray)
+
     result = ambariApi.getClusterStaleConfig()
     print(ambariApi)
 
@@ -30,12 +46,20 @@ def testAmbari():
     result = ambariApi.postServiceCheck("HDFS")
     print(ambariApi)
 
+    resultArray = ambariApi.postAllServicesCheck()
+    ambariApi.waitUntilRequestsCompleted(resultArray)
+
+    result = ambariApi.getRequests()
+    print(ambariApi)
+
+    result = ambariApi.putAbortStuckRequest(189)
+    print(ambariApi)
 
 def testRanger():
     rangerApi = RangerApi("http", "127.0.0.1", "6080", "basic")
     rangerApi.setCredentialsBasic("raj_ops", "raj_ops")
 
-    # Test RANGER API V1
+    # Test RANGER API V1 NOT MORE TO ADD
 
     result = rangerApi.getServices()
     print(rangerApi)
