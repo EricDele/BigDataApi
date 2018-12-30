@@ -177,107 +177,41 @@ class RangerApi(Api):
         """
         return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName))
 
-    def postCreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def postCreatePolicy(self, **kwargs):
         """
         post to create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-CreatePolicy
+        Arguments :
+            policyTemplateType = one of ["hdfs", "yarn", "hbase", "hive", "knox", "storm", "solr", "kafka", "nifi", "atlas"] 
+            serviceName = Name of the service
+            policyName = Name of the policy
+            description = description
+            isRecursive = Is policy recursive
+            users = Array of users
+            groups = Array of groups
+            resources = Resource affected by the policy ex :'["/lake/test"]', PolicyTemplateType dependent
+            accesses = Permissions poistionned on the resource, PolicyTemplateType dependent
         """
-        data = defaultdict(dict)
-        data["service"] = serviceName
-        data["name"] = policyName
-        data["description"] = description
-        data["resources"] = {"path": {"values": path, "isRecursive": recursive}}
-        data["policyItems"] = []
-        item = defaultdict(dict)
-        if(user != ""):
-            item["users"] = [user]
-        else:
-            item["users"] = []
-        if(group != ""):
-            item["groups"] = [group]
-        else:
-            item["groups"] = []
-        if(permissions == "r--"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}]
-        elif(permissions == "r-x"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "execute"}]
-        elif(permissions == "rwx"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "write"}, {"isAllowed": True, "type": "execute"}]
-        else:
-            item["accesses"] = []
-        data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        url = self._api[inspect.currentframe().f_code.co_name]
-        return self._callGenericMethode("post", url, json.dumps(data))
+        return self._callGenericMethode("post", self._api[inspect.currentframe().f_code.co_name], self.renderData("general_policy.json.j2", **kwargs))
 
-    def postApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def postApplyPolicy(self, **kwargs):
         """
         post to update or create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-ApplyPolicy
         This request should not remove permissions, only add more permissions or create new ones
         """
-        data = defaultdict(dict)
-        data["service"] = serviceName
-        data["name"] = policyName
-        data["description"] = description
-        data["resources"] = {"path": {"values": path, "isRecursive": recursive}}
-        # data["policyType"] = 0
-        data["policyItems"] = []
-        item = defaultdict(dict)
-        if(user != ""):
-            item["users"] = [user]
-        else:
-            item["users"] = []
-        if(group != ""):
-            item["groups"] = [group]
-        else:
-            item["groups"] = []
-        if(permissions == "r--"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}]
-        elif(permissions == "r-x"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "execute"}]
-        elif(permissions == "rwx"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "write"}, {"isAllowed": True, "type": "execute"}]
-        else:
-            item["accesses"] = []
-        data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        url = self._api[inspect.currentframe().f_code.co_name]
-        return self._callGenericMethode("post", url, json.dumps(data))
+        return self._callGenericMethode("post", self._api[inspect.currentframe().f_code.co_name], self.renderData("general_policy.json.j2", **kwargs))
 
-    def putUpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def putUpdatePolicyByServiceAndPolicyName(self, **kwargs):
         """
         post to update or create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-UpdatePolicybyservice-nameandpolicy-name
         This request should remove permissions
         """
-        data = defaultdict(dict)
-        data["service"] = serviceName
-        data["name"] = policyName
-        data["description"] = description
-        data["resources"] = {"path": {"values": path, "isRecursive": recursive}}
-        # data["policyType"] = 0
-        data["policyItems"] = []
-        item = defaultdict(dict)
-        if(user != ""):
-            item["users"] = [user]
-        else:
-            item["users"] = []
-        if(group != ""):
-            item["groups"] = [group]
-        else:
-            item["groups"] = []
-        if(permissions == "r--"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}]
-        elif(permissions == "r-x"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "execute"}]
-        elif(permissions == "rwx"):
-            item["accesses"] = [{"isAllowed": True, "type": "read"}, {"isAllowed": True, "type": "write"}, {"isAllowed": True, "type": "execute"}]
-        else:
-            item["accesses"] = []
-        data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        return self._callGenericMethode("put", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName), json.dumps(data))
+        return self._callGenericMethode("put", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = kwargs['policyName'], serviceName = kwargs['serviceName']), self.renderData("general_policy.json.j2", **kwargs))
 
     def deleteDeletePolicyByServiceAndPolicyName(self, serviceName="", policyName=""):
         """

@@ -1,0 +1,11 @@
+{% if accesses == "r--" %}
+[{"isAllowed": true, "type": "read"}]
+{% elif accesses == "rw-" %}
+[{"isAllowed": true, "type": "read"}, {"isAllowed": true, "type": "write"}]
+{% elif accesses == "r-x" %}
+[{"isAllowed": true, "type": "read"}, {"isAllowed": true, "type": "execute"}]
+{% elif accesses == "rwx" %}
+[{"isAllowed": true, "type": "read"}, {"isAllowed": true, "type": "write"}, {"isAllowed": true, "type": "execute"}]
+{% else %}
+[]
+{% endif %}

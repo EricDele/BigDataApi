@@ -1,0 +1,43 @@
+{
+  "dataMaskPolicyItems": [], 
+  "name": "all - queue", 
+  "service": "Sandbox_yarn", 
+  "isEnabled": true, 
+  "allowExceptions": [], 
+  "rowFilterPolicyItems": [], 
+  "isAuditEnabled": true, 
+  "policyType": 0, 
+  "denyExceptions": [], 
+  "denyPolicyItems": [], 
+  "policyItems": [
+    {
+      "groups": [], 
+      "conditions": [], 
+      "users": [
+        "yarn", 
+        "ambari-qa"
+      ], 
+      "accesses": [
+        {
+          "isAllowed": true, 
+          "type": "submit-app"
+        }, 
+        {
+          "isAllowed": true, 
+          "type": "admin-queue"
+        }
+      ], 
+      "delegateAdmin": true
+    }
+  ], 
+  "resources": {
+    "queue": {
+      "isExcludes": false, 
+      "values": [
+        "*"
+      ], 
+      "isRecursive": true
+    }
+  }, 
+  "description": "Policy for all - queue"
+}

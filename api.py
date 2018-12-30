@@ -4,7 +4,7 @@
 
 # Imports for general purpose
 import json
-from jinja2 import Environment
+from jinja2 import Environment, FileSystemLoader
 
 # Imports for http requests and Authent
 import requests
@@ -72,6 +72,13 @@ class Api(object):
 
     def setData(self, data):
         self._data = data
+
+    def renderData(self, templateFile, **kwargs):
+        """
+        render a template file contening data
+        """
+        jinja2_env = Environment(loader=FileSystemLoader("./templates"), trim_blocks=True)
+        return jinja2_env.get_template(templateFile).render(kwargs)
 
     def checkReturnCode(self):
         """

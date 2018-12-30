@@ -1,11 +1,29 @@
 # BigDataApi
 A BigData Api library for managing Ambari and Ranger
 
+- [BigDataApi](#bigdataapi)
+  - [Goal of this project](#goal-of-this-project)
+  - [Imports required](#imports-required)
+  - [Classes Tree](#classes-tree)
+  - [Api](#api)
+  - [Ranger](#ranger)
+  - [Ambari](#ambari)
+    - [How to use it](#how-to-use-it)
+
 ## Goal of this project
 
 This project is for giving an api to interact with the Hortonworks components and their API.
 
 This is a python project that expose classes to use in your python scripts for symplifying the interaction with the components.
+
+## Imports required
+
+- inspect
+- json
+- time
+- jinja2
+- requests
+- collections
 
 ## Classes Tree
 
@@ -38,8 +56,6 @@ class Api(__builtin__.object)
  |  setCompleteUrl(self, url, methode, authenticationMethode, headers, data)
  |  
  |  setCredentialsBasic(self, user, password)
- |  
- |  setCredentialsKerberos(self, principal)
  |  
  |  setData(self, data)
  |  
@@ -87,12 +103,6 @@ serRoleList"
  |  getGroups(self)
  |      get the groups
  |  
- |  getPolicies(self)
- |      get the policies
- |  
- |  getPolicy(self, policyNameOrId)
- |      get a policy by Name or Id
- |  
  |  getService(self, serviceNameOrId)
  |      get a service by Name or Id
  |  
@@ -105,25 +115,25 @@ serRoleList"
  |  getUsers(self)
  |      get the users
  |  
- |  getV2PolicyByServiceAndPolicyName(self, serviceName, policy)
+ |  getPolicyByServiceAndPolicyName(self, serviceName, policy)
  |      get a policy by Service and Policy Name
  |  
- |  getV2SearchPolicyInService(self, serviceName, policyName='')
+ |  getSearchPolicyInService(self, serviceName, policyName='')
  |      get a search on policy in a service
  |  
- |  getV2Services(self, serviceType='')
+ |  getServices(self, serviceType='')
  |      get the services
  |      
  |      serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
  |  
- |  postV2ApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  postApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
  |      post to update or create a policy
  |      This request should not remove permissions, only add more permissions or create new ones
  |  
- |  postV2CreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  postCreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
  |      post to create a policy
  |  
- |  putV2UpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  putUpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
  |      post to update or create a policy
  |      This request should remove permissions
  |  

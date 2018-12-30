@@ -1,0 +1,26 @@
+{
+  "dataMaskPolicyItems": {{ dataMaskPolicyItems | default([]) }}, 
+  "name": "{{ policyName }}", 
+  "service": "{{ serviceName }}", 
+  "isEnabled": {{ isEnabled | default("true") }}, 
+  "allowExceptions": {{ allowExceptions | default([]) }}, 
+  "rowFilterPolicyItems": {{ rowFilterPolicyItems | default([]) }}, 
+  "isAuditEnabled": {{ isAuditEnabled | default("true") }}, 
+  "policyType": 0, 
+  "denyExceptions": {{ denyExceptions | default([]) }}, 
+  "denyPolicyItems": {{ denyPolicyItems | default([]) }}, 
+  "policyItems": [
+    {
+      "groups": {{ groups }}, 
+      "conditions": {{ conditions | default([]) }}, 
+      "users": {{ users }}, 
+      "accesses": {% include policyTemplateType + "_accesses_policy.json.j2" %},
+      "delegateAdmin": {{ delegateAdmin | default("false") }}
+    }
+  ], 
+  "resources": {
+    {% include policyTemplateType + "_resources_policy.json.j2" %}
+    }
+  }, 
+  "description": "{{ description }}"
+}
