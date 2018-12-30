@@ -4,15 +4,11 @@
 
 # Imports for general purpose
 import json
-import pkg_resources
-from packaging import version
+from jinja2 import Environment
 
 # Imports for http requests and Authent
 import requests
 from requests.auth import HTTPBasicAuth
-from requests_kerberos import HTTPKerberosAuth, REQUIRED
-# https://pypi.python.org/pypi/requests-kerberos/0.11.0
-# Should look at https://krbcontext.github.io/usage.html for generate tgt with keytab
 
 class ApiError(Exception):
     """
@@ -47,13 +43,6 @@ class Api(object):
         self._password = password
         self._authentication = HTTPBasicAuth(self._user, self._password)
 
-    def setCredentialsKerberos(self, principal):
-        if(version.parse(pkg_resources.get_distribution("requests_kerberos").version) >= version.parse("0.9.0")):
-            self._authentication = HTTPKerberosAuth(mutual_authentication=REQUIRED, principal=self._principal)
-        else:
-            self._authentication = HTTPKerberosAuth(mutual_authentication=REQUIRED)
-        self._principal = principal
-
     def setCompleteUrl(self, url, methode, authenticationMethode, headers, data):
         self._url = url
         # should be one of GET, PUT, POST, DELETE
@@ -65,6 +54,10 @@ class Api(object):
 
     def setUrl(self, url):
         self._url = url
+
+    def renderUrl(self, url, **kwargs):
+        # Render the url with Jinja2 
+        return Environment().from_string(url).render(kwargs)
 
     def setMethode(self, methode):
         # should be one of GET, PUT, POST, DELETE

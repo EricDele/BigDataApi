@@ -18,60 +18,48 @@ def testAmbari():
     result = ambariApi.getClusterStatus()
     print(ambariApi)
 
-    result = ambariApi.getClusterServices()
-    for item in result.json()["items"]:
-        print(item["ServiceInfo"]["service_name"])
+    # result = ambariApi.getClusterServices()
+    # for item in result.json()["items"]:
+    #     print(item["ServiceInfo"]["service_name"])
 
-    result = ambariApi.putClusterServiceStart("OOZIE")
-    result = ambariApi.getRequestStatus(result.json()["Requests"]["id"])
+    # result = ambariApi.putClusterServiceStart("OOZIE")
+    # result = ambariApi.getRequestStatus(result.json()["Requests"]["id"])
 
-    result = ambariApi.putClusterServiceStop("OOZIE")
-    ambariApi.waitUntilRequestsCompleted(result.json()["Requests"]["id"])
+    # result = ambariApi.putClusterServiceStop("OOZIE")
+    # ambariApi.waitUntilRequestsCompleted(result.json()["Requests"]["id"])
 
-    resultArray = ambariApi.putClusterServiceStopAll()
-    ambariApi.waitUntilRequestsCompleted(resultArray)
+    # resultArray = ambariApi.putClusterServiceStopAll()
+    # ambariApi.waitUntilRequestsCompleted(resultArray)
 
-    resultArray = ambariApi.putClusterServiceStartAll()
-    ambariApi.waitUntilRequestsCompleted(resultArray)
+    # resultArray = ambariApi.putClusterServiceStartAll()
+    # ambariApi.waitUntilRequestsCompleted(resultArray)
 
-    result = ambariApi.getClusterStaleConfig()
-    print(ambariApi)
+    # result = ambariApi.getClusterStaleConfig()
+    # print(ambariApi)
 
-    result = ambariApi.getResourceManagerHosts()
-    print(ambariApi)
+    # result = ambariApi.getResourceManagerHosts()
+    # print(ambariApi)
 
-    result = ambariApi.getQueuesFromAmbari()
-    print(ambariApi)
+    # result = ambariApi.getQueuesFromAmbari()
+    # print(ambariApi)
 
-    result = ambariApi.postServiceCheck("HDFS")
-    print(ambariApi)
+    # result = ambariApi.postServiceCheck("HDFS")
+    # print(ambariApi)
 
-    resultArray = ambariApi.postAllServicesCheck()
-    ambariApi.waitUntilRequestsCompleted(resultArray)
+    # resultArray = ambariApi.postAllServicesCheck()
+    # ambariApi.waitUntilRequestsCompleted(resultArray)
 
-    result = ambariApi.getRequests()
-    print(ambariApi)
+    # result = ambariApi.getRequests()
+    # print(ambariApi)
 
-    result = ambariApi.putAbortStuckRequest(189)
-    print(ambariApi)
+    # result = ambariApi.putAbortStuckRequest(189)
+    # print(ambariApi)
 
 def testRanger():
+    # Test RANGER API V2
+
     rangerApi = RangerApi("http", "127.0.0.1", "6080", "basic")
     rangerApi.setCredentialsBasic("raj_ops", "raj_ops")
-
-    # Test RANGER API V1 NOT MORE TO ADD
-
-    result = rangerApi.getServices()
-    print(rangerApi)
-
-    result = rangerApi.getPolicies()
-    print(rangerApi)
-
-    result = rangerApi.getPolicy(16)
-    print(rangerApi)
-
-    result = rangerApi.getPolicy("HDFS Global Allow")
-    print(rangerApi)
 
     result = rangerApi.getService(1)
     print(rangerApi)
@@ -79,30 +67,34 @@ def testRanger():
     result = rangerApi.getService("Sandbox_hadoop")
     print(rangerApi)
 
-    # Test RANGER API V2
-
-    result = rangerApi.getV2Services()
+    result = rangerApi.getServices()
     print(rangerApi)
 
-    result = rangerApi.getV2PolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
     print(rangerApi)
 
-    result = rangerApi.getV2PolicyByServiceAndPolicyName("Sandbox_hive", "all - database, table, column")
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "all - queue")
     print(rangerApi)
 
-    result = rangerApi.getV2SearchPolicyInService("Sandbox_hadoop", "HDFS Global Allow")
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hive", "all - database, table, column")
     print(rangerApi)
 
-    result = rangerApi.postV2CreatePolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], True, "it1", "", "r--")
+    result = rangerApi.getSearchPolicyInService("Sandbox_hadoop", "HDFS Global Allow")
     print(rangerApi)
 
-    result = rangerApi.postV2ApplyPolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "r-x")
+    result = rangerApi.postCreatePolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], True, "it1", "", "r--")
     print(rangerApi)
 
-    result = rangerApi.putV2UpdatePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "r--")
+    result = rangerApi.postApplyPolicy("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "r-x")
     print(rangerApi)
 
-    result = rangerApi.deleteV2DeletePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
+    result = rangerApi.putUpdatePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test", "policy for the lake test", ["/lake/test"], False, "it1", "", "rwx")
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
+    print(rangerApi)
+
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
     print(rangerApi)
 
     # API for Users and groups management
@@ -139,5 +131,5 @@ def testRanger():
 
 
 if __name__ == '__main__':
-    testAmbari()
+    # testAmbari()
     testRanger()

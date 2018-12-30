@@ -6,7 +6,6 @@ import inspect
 import json
 from collections import defaultdict
 
-
 class RangerApiError(Exception):
     """
     Exception for API call.
@@ -67,9 +66,9 @@ class RangerApi(Api):
         get an user by Name or Id
         """
         if(type(userNameOrId) is str):
-            url = self._api[inspect.currentframe().f_code.co_name + "ByName"] + userNameOrId
+            url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ByName"], userName = userNameOrId)
         else:
-            url = self._api[inspect.currentframe().f_code.co_name + "ById"] + str(userNameOrId)
+            url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ById"], userId = str(userNameOrId))
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         result = self._callGenericMethode("get", url)
         return self._r
@@ -87,9 +86,9 @@ class RangerApi(Api):
         get the group by Name or Id
         """
         if(type(groupNameOrId) is str):
-            url = self._api[inspect.currentframe().f_code.co_name + "ByName"] + groupNameOrId
+            url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ByName"], groupName = groupNameOrId)
         else:
-            url = self._api[inspect.currentframe().f_code.co_name + "ById"] + str(groupNameOrId)
+            url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ById"], groupId = str(groupNameOrId))
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         result = self._callGenericMethode("get", url)
         return self._r
@@ -112,7 +111,7 @@ class RangerApi(Api):
         data["lastName"] = userInfos["vXUsers"][0]["lastName"]
         data["userRoleList"] = [role.upper()]
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        url = self._api[inspect.currentframe().f_code.co_name].replace('{id}', str(data["id"]))
+        url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name], id = str(data["id"]))
         result = self._callGenericMethode("put", url, json.dumps(data))
         return self._r
 
@@ -143,85 +142,42 @@ class RangerApi(Api):
         # Get the current infos from the user to grab mandatory fields
         userInfos = self.getUser(userNameOrId).json()
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        url = self._api[inspect.currentframe().f_code.co_name].replace('{id}', str(userInfos["vXUsers"][0]["id"])) + "?forceDelete=true"
+        url = self.renderUrl(self._api[inspect.currentframe().f_code.co_name], id = str(userInfos["vXUsers"][0]["id"]))
         result = self._callGenericMethode("delete", url)
         return self._r
 
-
-    # API V1 ##################################
-
-    def getServices(self):
-        """
-        get the services
-        """
-        result = self._callGenericMethode("get", self._api[inspect.currentframe().f_code.co_name])
-        return result
+    # API V2 ##################################
 
     def getService(self, serviceNameOrId):
         """
         get a service by Name or Id
         """
         if(type(serviceNameOrId) is str):
-            url = self._api[inspect.currentframe().f_code.co_name + "ByName"] + serviceNameOrId
+            return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ByName"], serviceName = serviceNameOrId ))
         else:
-            url = self._api[inspect.currentframe().f_code.co_name + "ById"] + str(serviceNameOrId)
-        result = self._callGenericMethode("get", url)
-        return result
+            return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name + "ById"], serviceId = str(serviceNameOrId) ))
 
-    def getPolicies(self):
-        """
-        get the policies
-        """
-        result = self._callGenericMethode("get", self._api[inspect.currentframe().f_code.co_name])
-        return result
-
-    def getPolicy(self, policyNameOrId):
-        """
-        get a policy by Name or Id
-        """
-        if(type(policyNameOrId) is str):
-            url = self._api[inspect.currentframe().f_code.co_name + "ByName"] + policyNameOrId
-        else:
-            url = self._api[inspect.currentframe().f_code.co_name + "ById"] + str(policyNameOrId)
-        result = self._callGenericMethode("get", url)
-        return result
-
-    # API V2 ##################################
-
-    def getV2Services(self, serviceType=""):
+    def getServices(self, serviceType=""):
         """
         get the services
 
         serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
         """
-        if(serviceType == ""):
-            urlSuffix = ""
-        else:
-            urlSuffix = "?serviceType=" + serviceType
-        result = self._callGenericMethode("get", self._api[inspect.currentframe().f_code.co_name] + urlSuffix)
-        return result
+        return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], serviceType = serviceType))
 
-    def getV2PolicyByServiceAndPolicyName(self, serviceName, policy):
+    def getPolicyByServiceAndPolicyName(self, serviceName, policyName):
         """
         get a policy by Service and Policy Name
-        """
-        url = self._api[inspect.currentframe().f_code.co_name].replace('{service-name}', serviceName).replace('{policy-name}', policy)
-        result = self._callGenericMethode("get", url)
-        return result
+        """        
+        return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName))
 
-    def getV2SearchPolicyInService(self, serviceName, policyName=""):
+    def getSearchPolicyInService(self, serviceName, policyName=""):
         """
         get a search on policy in a service
         """
-        if(policyName == ""):
-            urlSuffix = ""
-        else:
-            urlSuffix = "?policyName=" + policyName
-        url = self._api[inspect.currentframe().f_code.co_name].replace('{service-name}', serviceName) + urlSuffix
-        result = self._callGenericMethode("get", url)
-        return result
+        return self._callGenericMethode("get", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName))
 
-    def postV2CreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def postCreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
         """
         post to create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-CreatePolicy
@@ -252,10 +208,9 @@ class RangerApi(Api):
         data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         url = self._api[inspect.currentframe().f_code.co_name]
-        result = self._callGenericMethode("post", url, json.dumps(data))
-        return result
+        return self._callGenericMethode("post", url, json.dumps(data))
 
-    def postV2ApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def postApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
         """
         post to update or create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-ApplyPolicy
@@ -288,10 +243,9 @@ class RangerApi(Api):
         data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         url = self._api[inspect.currentframe().f_code.co_name]
-        result = self._callGenericMethode("post", url, json.dumps(data))
-        return result
+        return self._callGenericMethode("post", url, json.dumps(data))
 
-    def putV2UpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
+    def putUpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user="", group="", permissions="---"):
         """
         post to update or create a policy
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-UpdatePolicybyservice-nameandpolicy-name
@@ -323,11 +277,9 @@ class RangerApi(Api):
             item["accesses"] = []
         data["policyItems"].append(item)
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
-        url = self._api[inspect.currentframe().f_code.co_name].replace('{service-name}', serviceName).replace('{policy-name}', policyName)
-        result = self._callGenericMethode("put", url, json.dumps(data))
-        return result
+        return self._callGenericMethode("put", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName), json.dumps(data))
 
-    def deleteV2DeletePolicyByServiceAndPolicyName(self, serviceName="", policyName=""):
+    def deleteDeletePolicyByServiceAndPolicyName(self, serviceName="", policyName=""):
         """
         Delete a policy by its name and service
         https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-Deletepolicybyservice-nameandpolicy-name
@@ -335,6 +287,4 @@ class RangerApi(Api):
         if(serviceName == "" or policyName == ""):
             raise RangerApiError("For deleting a policy you have to set the serviceName and policyName")
         else:
-            urlSuffix = "?servicename=" + serviceName + "&policyname=" + policyName
-        result = self._callGenericMethode("delete", self._api[inspect.currentframe().f_code.co_name] + urlSuffix)
-        return result
+            return self._callGenericMethode("delete", self.renderUrl(self._api[inspect.currentframe().f_code.co_name], policyName = policyName, serviceName = serviceName))
