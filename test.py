@@ -62,55 +62,117 @@ def testRanger():
     rangerApi = RangerApi("http", "127.0.0.1", "6080", "basic")
     rangerApi.setCredentialsBasic("raj_ops", "raj_ops")
 
-    # result = rangerApi.getService(1)
-    # print(rangerApi)
+    result = rangerApi.getService(1)
+    print(rangerApi)
 
-    # result = rangerApi.getService("Sandbox_hadoop")
-    # print(rangerApi)
+    result = rangerApi.getService("Sandbox_hadoop")
+    print(rangerApi)
 
-    # result = rangerApi.getServices()
-    # print(rangerApi)
+    result = rangerApi.getServices()
+    print(rangerApi)
 
-    # result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "all - path")
-    # print(rangerApi)
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "all - path")
+    print(rangerApi)
 
-    # result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
-    # print(rangerApi)
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "HDFS Global Allow")
+    print(rangerApi)
 
-    # result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "all - queue")
-    # print(rangerApi)
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "all - queue")
+    print(rangerApi)
 
-    # result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hive", "all - database, table, column")
-    # print(rangerApi)
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hive", "all - database, table, column")
+    print(rangerApi)
 
-    # result = rangerApi.getSearchPolicyInService("Sandbox_hbase", "all - table, column-family, column")
-    # print(rangerApi)
+    result = rangerApi.getSearchPolicyInService("Sandbox_hbase", "all - table, column-family, column")
+    print(rangerApi)
 
-    # result = rangerApi.getSearchPolicyInService("Sandbox_knox", "all - topology, service")
-    # print(rangerApi)
+    result = rangerApi.getSearchPolicyInService("Sandbox_knox", "all - topology, service")
+    print(rangerApi)
 
-    # result = rangerApi.getSearchPolicyInService("Sandbox_kafka", "all - topic")
-    # print(rangerApi)
+    result = rangerApi.getSearchPolicyInService("Sandbox_kafka", "all - topic")
+    print(rangerApi)
 
+    ## Create User for policies
+    result = rangerApi.createUser("it1", "it1", "it1", "it1", "it1", "it1it1it1", [2], ["ROLE_USER"])
+    print(rangerApi)
+
+    ## HDFS Policies
     result = rangerApi.postCreatePolicy(policyTemplateType = "hdfs", serviceName = "Sandbox_hadoop", policyName = "lake_test", description = "policy for the lake test",
-                                        resources = json.dumps(["/lake/test"]), isRecursive = json.dumps(False), users = json.dumps(["it1"]), groups = json.dumps([]),
-                                        accesses = "r--")
+                                        resources = ["/lake/test","/lake/project"], isRecursive = False, users = ["it1"], groups = [], accesses = "r--")
     print(rangerApi)
 
     result = rangerApi.postApplyPolicy(policyTemplateType = "hdfs", serviceName = "Sandbox_hadoop", policyName = "lake_test", description = "policy for the lake test",
-                                       resources = json.dumps(["/lake/test"]), isRecursive = json.dumps(False), users = json.dumps(["it1"]), groups = json.dumps([]),
-                                       accesses = "r-x")
+                                       resources = ["/lake/test","/lake/project"], isRecursive = False, users = ["it1"], groups = [], accesses = "r-x")
     print(rangerApi)
 
     result = rangerApi.putUpdatePolicyByServiceAndPolicyName(policyTemplateType = "hdfs", serviceName = "Sandbox_hadoop", policyName = "lake_test", description = "policy for the lake test",
-                                                             resources = json.dumps(["/lake/test"]), isRecursive = json.dumps(False), users = json.dumps(["it1"]), groups = json.dumps([]),
-                                                             accesses = "rwx")
+                                                             resources = ["/lake/test","/lake/project"], isRecursive = False, users = ["it1"], groups = [], accesses = "rwx")
     print(rangerApi)
 
     result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
     print(rangerApi)
 
     result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_hadoop", "lake_test")
+    print(rangerApi)
+
+    ## HBASE Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "hbase", serviceName = "Sandbox_hbase", policyName = "hbase_test", description = "policy for the hbase test",
+                                        resources = {"column":{"isExcludes":"false","value":["*"]},"table":{"isExcludes":"false","value":["j*","d*"]},"column_family":{"isExcludes":"false","value":["*"]}}, users = ["it1"], groups = [],
+                                        accesses = ["read","write","create","admin"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hbase", "hbase_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_hbase", "hbase_test")
+    print(rangerApi)
+
+    ## HIVE Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "hive", serviceName = "Sandbox_hive", policyName = "hive_test", description = "policy for the hive test",
+                                        resources = {"column":{"isExcludes":"false","value":["*"]},"table":{"isExcludes":"false","value":["j*","d*"]},"database":{"isExcludes":"false","value":["*"]}}, users = ["it1"], groups = [],
+                                        accesses = ["select","update","create","drop","alter","index","lock","all","read","write"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_hive", "hive_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_hive", "hive_test")
+    print(rangerApi)
+
+    ## KAFKA Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "kafka", serviceName = "Sandbox_kafka", policyName = "kafka_test", description = "policy for the kafka test",
+                                        resources = ["topicLakeTest","topicProjectTest"], isRecursive = False, users = ["it1"], groups = [],
+                                        accesses = ["publish","consume","configure","describe","create","delete","kafka_admin"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_kafka", "kafka_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_kafka", "kafka_test")
+    print(rangerApi)
+
+    ## YARN Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_yarn", policyName = "yarn_test", description = "policy for the yarn test",
+                                        resources = ["default"], isRecursive = False, users = ["it1"], groups = [],
+                                        accesses = ["submit-app","admin-queue"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
+    print(rangerApi)
+
+    ## KNOX Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "knox", serviceName = "Sandbox_knox", policyName = "knox_test", description = "policy for the knox test",
+                                        resources = {"service":{"isExcludes":"false","value":["*"]},"topology":{"isExcludes":"false","value":["j*","d*"]}}, users = ["it1"], groups = [],
+                                        accesses = ["allow"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_knox", "knox_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_knox", "knox_test")
     print(rangerApi)
 
     # API for Users and groups management

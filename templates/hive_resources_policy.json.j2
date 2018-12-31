@@ -1,0 +1,15 @@
+    "column": {
+      "isExcludes": {{ resources.column.isExcludes | default(false) | tojson }},
+      "values": {{ resources.column.value | tojson }}, 
+      "isRecursive": {{ resources.column.isRecursive | default(false) | tojson }}
+    },
+    "table": {
+      "isExcludes": {{ resources.table.isExcludes | default(false) | tojson }},
+      "values": {{ resources.table.value | tojson }}, 
+      "isRecursive": {{ resources.table.isRecursive | default(false) | tojson }}
+    },
+    "database": {
+      "isExcludes": {{ resources.database.isExcludes | default(false) | tojson }},
+      "values": {{ resources.database.value | tojson }},
+      "isRecursive": {{ resources.database.isRecursive | default(false) | tojson }}
+    }

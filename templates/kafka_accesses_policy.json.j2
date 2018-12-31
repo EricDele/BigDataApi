@@ -1,0 +1,3 @@
+[{% for permission in accesses %}
+{"isAllowed": true, "type": "{{ permission }}"}{% if not loop.last %},{% endif %}
+{% endfor %}]

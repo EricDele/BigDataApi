@@ -1,0 +1,10 @@
+    "service": {
+      "isExcludes": {{ resources.service.isExcludes | default(false) | tojson }},
+      "values": {{ resources.service.value | tojson }}, 
+      "isRecursive": {{ resources.service.isRecursive | default(false) | tojson }}
+    },
+    "topology": {
+      "isExcludes": {{ resources.topology.isExcludes | default(false) | tojson }},
+      "values": {{ resources.topology.value | tojson }}, 
+      "isRecursive": {{ resources.topology.isRecursive | default(false) | tojson }}
+    }

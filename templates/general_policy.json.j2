@@ -1,26 +1,26 @@
 {
-  "dataMaskPolicyItems": {{ dataMaskPolicyItems | default([]) }}, 
-  "name": "{{ policyName }}", 
-  "service": "{{ serviceName }}", 
-  "isEnabled": {{ isEnabled | default("true") }}, 
-  "allowExceptions": {{ allowExceptions | default([]) }}, 
-  "rowFilterPolicyItems": {{ rowFilterPolicyItems | default([]) }}, 
-  "isAuditEnabled": {{ isAuditEnabled | default("true") }}, 
+  "dataMaskPolicyItems": {{ dataMaskPolicyItems | default([]) | tojson }}, 
+  "name": {{ policyName | tojson }},
+  "service": {{ serviceName | tojson }},
+  "isEnabled": {{ isEnabled | default(true) | tojson }}, 
+  "allowExceptions": {{ allowExceptions | default([]) | tojson }}, 
+  "rowFilterPolicyItems": {{ rowFilterPolicyItems | default([]) | tojson }}, 
+  "isAuditEnabled": {{ isAuditEnabled | default(true) | tojson }}, 
   "policyType": 0, 
-  "denyExceptions": {{ denyExceptions | default([]) }}, 
-  "denyPolicyItems": {{ denyPolicyItems | default([]) }}, 
+  "denyExceptions": {{ denyExceptions | default([]) | tojson }}, 
+  "denyPolicyItems": {{ denyPolicyItems | default([]) | tojson }}, 
   "policyItems": [
     {
-      "groups": {{ groups }}, 
-      "conditions": {{ conditions | default([]) }}, 
-      "users": {{ users }}, 
+      "groups": {{ groups | tojson }}, 
+      "conditions": {{ conditions | default([]) | tojson }}, 
+      "users": {{ users | tojson }}, 
       "accesses": {% include policyTemplateType + "_accesses_policy.json.j2" %},
-      "delegateAdmin": {{ delegateAdmin | default("false") }}
+      "delegateAdmin": {{ delegateAdmin | default(false) | tojson }}
     }
   ], 
   "resources": {
     {% include policyTemplateType + "_resources_policy.json.j2" %}
     }
   }, 
-  "description": "{{ description }}"
+  "description": {{ description | tojson }}
 }

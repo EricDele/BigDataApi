@@ -192,6 +192,7 @@ class RangerApi(Api):
             resources = Resource affected by the policy ex :'["/lake/test"]', PolicyTemplateType dependent
             accesses = Permissions poistionned on the resource, PolicyTemplateType dependent
         """
+        print(self.renderData("general_policy.json.j2", **kwargs))
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         return self._callGenericMethode("post", self._api[inspect.currentframe().f_code.co_name], self.renderData("general_policy.json.j2", **kwargs))
 
