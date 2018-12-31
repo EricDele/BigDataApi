@@ -151,18 +151,6 @@ def testRanger():
     result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_kafka", "kafka_test")
     print(rangerApi)
 
-    ## YARN Policies
-    result = rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_yarn", policyName = "yarn_test", description = "policy for the yarn test",
-                                        resources = ["default"], isRecursive = False, users = ["it1"], groups = [],
-                                        accesses = ["submit-app","admin-queue"])
-    print(rangerApi)
-
-    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
-    print(rangerApi)
-    
-    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
-    print(rangerApi)
-
     ## KNOX Policies
     result = rangerApi.postCreatePolicy(policyTemplateType = "knox", serviceName = "Sandbox_knox", policyName = "knox_test", description = "policy for the knox test",
                                         resources = {"service":{"isExcludes":"false","value":["*"]},"topology":{"isExcludes":"false","value":["j*","d*"]}}, users = ["it1"], groups = [],
@@ -173,6 +161,18 @@ def testRanger():
     print(rangerApi)
     
     result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_knox", "knox_test")
+    print(rangerApi)
+
+    ## YARN Policies
+    result = rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_yarn", policyName = "yarn_test", description = "policy for the yarn test",
+                                        resources = ["default"], isRecursive = False, users = ["it1"], groups = [],
+                                        accesses = ["submit-app","admin-queue"])
+    print(rangerApi)
+
+    result = rangerApi.getPolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
+    print(rangerApi)
+    
+    result = rangerApi.deleteDeletePolicyByServiceAndPolicyName("Sandbox_yarn", "yarn_test")
     print(rangerApi)
 
     # API for Users and groups management

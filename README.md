@@ -4,11 +4,23 @@ A BigData Api library for managing Ambari and Ranger
 - [BigDataApi](#bigdataapi)
   - [Goal of this project](#goal-of-this-project)
   - [Imports required](#imports-required)
+  - [How to use it](#how-to-use-it)
+    - [Initiate an object](#initiate-an-object)
+      - [Ambari](#ambari)
+      - [Ranger](#ranger)
+    - [Ranger Policies creation](#ranger-policies-creation)
+      - [Hdfs](#hdfs)
+      - [Hbase](#hbase)
+      - [Hive](#hive)
+      - [Kafka](#kafka)
+      - [Knox](#knox)
+      - [Yarn](#yarn)
   - [Classes Tree](#classes-tree)
   - [Api](#api)
-  - [Ranger](#ranger)
-  - [Ambari](#ambari)
-    - [How to use it](#how-to-use-it)
+  - [Ranger](#ranger-1)
+  - [Ambari](#ambari-1)
+  - [Author](#author)
+  - [LICENSE](#license)
 
 ## Goal of this project
 
@@ -24,6 +36,95 @@ This is a python project that expose classes to use in your python scripts for s
 - jinja2
 - requests
 - collections
+
+## How to use it
+
+For testing see the *test.py* file with many examples.
+
+### Initiate an object
+
+#### Ambari 
+
+```Python
+ambariApi = AmbariApi("http", "127.0.0.1", "8080", "basic")
+ambariApi.setCredentialsBasic("admin", "hortonworks")
+result = ambariApi.getClusterName() # Get the cluster name
+print(ambariApi) # Will show you the result
+help(ambariApi) # Will show you the class methods
+```
+
+#### Ranger
+
+```Python
+rangerApi = RangerApi("http", "127.0.0.1", "6080", "basic")
+rangerApi.setCredentialsBasic("raj_ops", "raj_ops")
+result = rangerApi.getServices() # Get all the configured Services
+print(rangerApi) # Will show you the result
+help(rangerApi) # Will show you the class methods
+```
+
+### Ranger Policies creation
+
+#### Hdfs
+
+```Python
+rangerApi.postApplyPolicy(policyTemplateType = "hdfs", serviceName = "Sandbox_hadoop", 
+                          policyName = "lake_test", description = "policy for the lake test",
+                          resources = ["/lake/test","/lake/project"], isRecursive = False, 
+                          users = ["it1"], groups = [], 
+                          accesses = "r-x")
+```
+
+#### Hbase
+
+```Python
+rangerApi.postCreatePolicy(policyTemplateType = "hbase", serviceName = "Sandbox_hbase", 
+                          policyName = "hbase_test", description = "policy for the hbase test",
+                          resources = {"column":{"isExcludes":"false","value":["*"]},"table":{"isExcludes":"false","value":["j*","d*"]},"column_family":{"isExcludes":"false","value":["*"]}}, 
+                          users = ["it1"], groups = [], 
+                          accesses = ["read","write","create","admin"])
+```
+
+#### Hive
+
+```Python
+rangerApi.postCreatePolicy(policyTemplateType = "hive", serviceName = "Sandbox_hive", 
+                          policyName = "hive_test", description = "policy for the hive test",
+                          resources = {"column":{"isExcludes":"false","value":["*"]},"table":{"isExcludes":"false","value":["j*","d*"]},"database":{"isExcludes":"false","value":["*"]}},
+                          users = ["it1"], groups = [],
+                          accesses = ["select","update","create","drop","alter","index","lock","all","read","write"])
+```
+
+#### Kafka
+
+```Python
+rangerApi.postCreatePolicy(policyTemplateType = "kafka", serviceName = "Sandbox_kafka", 
+                          policyName = "kafka_test", description = "policy for the kafka test",
+                          resources = ["topicLakeTest","topicProjectTest"], isRecursive = False, 
+                          users = ["it1"], groups = [],
+                          accesses = ["publish","consume","configure","describe","create","delete","kafka_admin"])
+```
+
+#### Knox
+
+```Python
+rangerApi.postCreatePolicy(policyTemplateType = "knox", serviceName = "Sandbox_knox", 
+                          policyName = "knox_test", description = "policy for the knox test",
+                          resources = {"service":{"isExcludes":"false","value":["*"]},"topology":{"isExcludes":"false","value":["j*","d*"]}}, 
+                          users = ["it1"], groups = [],
+                          accesses = ["allow"])
+```
+
+#### Yarn
+
+```Python
+rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_yarn", 
+                          policyName = "yarn_test", description = "policy for the yarn test",
+                          resources = ["default"], isRecursive = False, 
+                          users = ["it1"], groups = [],
+                          accesses = ["submit-app","admin-queue"])
+```
+
 
 ## Classes Tree
 
@@ -84,18 +185,18 @@ class RangerApi(api.Api)
  |  
  |  __str__(self)
  |  
- |  createUser(self, userName, firstName, lastName, emailAddress, description, password, groupIdLi
-st=[], userRoleList=[])
+ |  createUser(self, userName, firstName, lastName, emailAddress, description, password, groupIdList=[], userRoleList=[])
  |      create an internal user
  |      MAndatory values :
- |          "name","firstName","lastName","emailAddress","description","password","groupIdList","u
-serRoleList"
+ |          "name","firstName","lastName","emailAddress","description","password","groupIdList","userRoleList"
+ |  
+ |  deleteDeletePolicyByServiceAndPolicyName(self, serviceName='', policyName='')
+ |      Delete a policy by its name and service
+ |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6
+-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-Deletepolicybyservice-nameandpolicy-name
  |  
  |  deleteUser(self, userNameOrId)
  |      delete a user
- |  
- |  deleteV2DeletePolicyByServiceAndPolicyName(self, serviceName='', policyName='')
- |      Delete a policy by its name and service
  |  
  |  getGroup(self, groupNameOrId)
  |      get the group by Name or Id
@@ -103,11 +204,19 @@ serRoleList"
  |  getGroups(self)
  |      get the groups
  |  
+ |  getPolicyByServiceAndPolicyName(self, serviceName, policyName)
+ |      get a policy by Service and Policy Name
+ |  
+ |  getSearchPolicyInService(self, serviceName, policyName='')
+ |      get a search on policy in a service
+ |  
  |  getService(self, serviceNameOrId)
  |      get a service by Name or Id
  |  
- |  getServices(self)
+ |  getServices(self, serviceType='')
  |      get the services
+ |      
+ |      serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
  |  
  |  getUser(self, userNameOrId)
  |      get an user by Name or Id
@@ -115,26 +224,28 @@ serRoleList"
  |  getUsers(self)
  |      get the users
  |  
- |  getPolicyByServiceAndPolicyName(self, serviceName, policy)
- |      get a policy by Service and Policy Name
- |  
- |  getSearchPolicyInService(self, serviceName, policyName='')
- |      get a search on policy in a service
- |  
- |  getServices(self, serviceType='')
- |      get the services
- |      
- |      serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
- |  
- |  postApplyPolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  postApplyPolicy(self, **kwargs)
  |      post to update or create a policy
+ |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-ApplyPolicy
  |      This request should not remove permissions, only add more permissions or create new ones
  |  
- |  postCreatePolicy(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  postCreatePolicy(self, **kwargs)
  |      post to create a policy
+ |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-CreatePolicy
+ |      Arguments :
+ |          policyTemplateType = one of ["hdfs", "yarn", "hbase", "hive", "knox", "storm", "solr", "kafka", "nifi", "atlas"] 
+ |          serviceName = Name of the service
+ |          policyName = Name of the policy
+ |          description = description
+ |          isRecursive = Is policy recursive
+ |          users = Array of users
+ |          groups = Array of groups
+ |          resources = Resource affected by the policy ex :'["/lake/test"]', PolicyTemplateType dependent
+ |          accesses = Permissions poistionned on the resource, PolicyTemplateType dependent
  |  
- |  putUpdatePolicyByServiceAndPolicyName(self, serviceName, policyName, description, path=[], recursive=False, user='', group='', permissions='---')
+ |  putUpdatePolicyByServiceAndPolicyName(self, **kwargs)
  |      post to update or create a policy
+ |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-UpdatePolicybyservice-nameandpolicy-name
  |      This request should remove permissions
  |  
  |  setRoleForUser(self, userNameOrId, role='ROLE_USER')
@@ -142,6 +253,7 @@ serRoleList"
  |      Mandatory values :
  |            "id", "name", "description","userRoleList": ["ROLE_SYS_ADMIN" OR "ROLE_USER"]
  |  
+
 
 ```
 
@@ -216,6 +328,15 @@ class AmbariApi(api.Api)
  |  
 
 ```
-### How to use it
+## Author
 
-For testing see the *test.py* file with many examples.
+Eric Deleforterie
+
+
+## LICENSE
+
+This repository is available under "GNU GENERAL PUBLIC LICENSE" (v. 3)
+
+http://www.gnu.org/licenses/gpl.txt
+
+![alt text](https://www.gnu.org/graphics/gplv3-127x51.png)
