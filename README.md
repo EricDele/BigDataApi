@@ -39,7 +39,7 @@ This is a python project that expose classes to use in your python scripts for s
 
 ## How to use it
 
-For testing see the *test.py* file with many examples.
+For testing see the [test.py](./test.py) file with many examples.
 
 ### Initiate an object
 
