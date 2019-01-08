@@ -4,7 +4,7 @@ A BigData Api library for managing Ambari and Ranger
 - [BigDataApi](#bigdataapi)
   - [Goal of this project](#goal-of-this-project)
   - [Imports required](#imports-required)
-  - [How to use it](#how-to-use-it)
+  - [How to use it in python mode](#how-to-use-it-in-python-mode)
     - [Initiate an object](#initiate-an-object)
       - [Ambari](#ambari)
       - [Ranger](#ranger)
@@ -15,6 +15,9 @@ A BigData Api library for managing Ambari and Ranger
       - [Kafka](#kafka)
       - [Knox](#knox)
       - [Yarn](#yarn)
+  - [How to use it in Ansible mode](#how-to-use-it-in-ansible-mode)
+    - [Ranger_policy Ansible module](#rangerpolicy-ansible-module)
+      - [Ranger_policy examples](#rangerpolicy-examples)
   - [Classes Tree](#classes-tree)
   - [Api](#api)
   - [Ranger](#ranger-1)
@@ -28,6 +31,8 @@ This project is for giving an api to interact with the Hortonworks components an
 
 This is a python project that expose classes to use in your python scripts for symplifying the interaction with the components.
 
+You can use it like an Ansible module too
+
 ## Imports required
 
 - inspect
@@ -37,7 +42,7 @@ This is a python project that expose classes to use in your python scripts for s
 - requests
 - collections
 
-## How to use it
+## How to use it in python mode
 
 For testing see the [test.py](./test.py) file with many examples.
 
@@ -125,6 +130,42 @@ rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_y
                           accesses = ["submit-app","admin-queue"])
 ```
 
+## How to use it in Ansible mode
+
+For testing see the [test_ranger_policy.yml](./test_ranger_policy.yml) file with many examples.
+
+### Ranger_policy Ansible module
+
+#### Ranger_policy examples
+
+```yaml
+- hosts: localhost
+  tasks:
+  - name: ranger policy creation
+    ranger_policy:
+      admin_url: "http://127.0.0.1:6080"
+      ranger_user: "raj_ops"
+      ranger_user_password: "raj_ops"
+      policy_type: "hdfs"
+      service_name: "Sandbox_hadoop"
+      policy_name: "lake_test"
+      description: "Policy test"
+      resources:
+          - /lake/test
+          - /lake/data
+      accesses: "rwx"
+      users: 
+          - it1
+  - name: ranger policy deletion
+    ranger_policy:
+      admin_url: "http://127.0.0.1:6080"
+      ranger_user: "raj_ops"
+      ranger_user_password: "raj_ops"
+      policy_type: "hdfs"
+      service_name: "Sandbox_hadoop"
+      policy_name: "lake_test"
+      state: absent
+```
 
 ## Classes Tree
 

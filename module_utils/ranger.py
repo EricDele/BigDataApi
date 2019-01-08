@@ -33,7 +33,7 @@ class RangerApi(Api):
         self._rootUrl = self._protocol + "://" + self._hostname + ":" + self._port
         self.setAuthenticationMethode(authenticationMethode)
         # Loading configuration file with all the api
-        with open("ranger_api.json") as jsonFile:
+        with open("module_utils/ranger_api.json") as jsonFile:
             self._config = json.load(jsonFile)
         self._api = self._config["api"]
 
@@ -192,7 +192,6 @@ class RangerApi(Api):
             resources = Resource affected by the policy ex :'["/lake/test"]', PolicyTemplateType dependent
             accesses = Permissions poistionned on the resource, PolicyTemplateType dependent
         """
-        print(self.renderData("general_policy.json.j2", **kwargs))
         self.setHeaders({"Content-Type": "application/json", "Accept": "application/json"})
         return self._callGenericMethode("post", self._api[inspect.currentframe().f_code.co_name], self.renderData("general_policy.json.j2", **kwargs))
 

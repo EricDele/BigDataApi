@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ambari import AmbariApi
-from ranger import RangerApi
+from module_utils.ambari import AmbariApi
+from module_utils.ranger import RangerApi
 import json
 
 

@@ -1,0 +1,26 @@
+- hosts: localhost
+  tasks:
+  - name: ranger policy creation
+    ranger_policy:
+      admin_url: "http://127.0.0.1:6080"
+      ranger_user: "raj_ops"
+      ranger_user_password: "raj_ops"
+      policy_type: "hdfs"
+      service_name: "Sandbox_hadoop"
+      policy_name: "lake_test"
+      description: "Policy test"
+      resources:
+          - /lake/test
+          - /lake/data
+      accesses: "rwx"
+      users: 
+          - it1
+  - name: ranger policy deletion
+    ranger_policy:
+      admin_url: "http://127.0.0.1:6080"
+      ranger_user: "raj_ops"
+      ranger_user_password: "raj_ops"
+      policy_type: "hdfs"
+      service_name: "Sandbox_hadoop"
+      policy_name: "lake_test"
+      state: absent
