@@ -66,6 +66,8 @@ ambariMetricsApi = AmbariMetricsApi("http", "localhost", "6188", "basic")
 ambariMetricsApi.setCredentialsBasic("admin", "")
 ambariMetricsApi.getMetrics(metricNames="dfs.datanode.BlocksWritten", appId="datanode", hostname="sandbox-hdp.hortonworks.com", precision="seconds", startTime=int((time.time()-600)*1000), endTime=int(time.time()))
 print(ambariMetricsApi)
+ambariMetricsApi.postMetrics(metricNames="zookeeper.zk_outstanding_requests", appId="zookeeper", hostname="sandbox-hdp.hortonworks.com", startTime=int(timestamp), timestamp=int(timestamp), metrics=json.dumps({str(timestamp): int(value)}) )
+print(ambariMetricsApi)
 ```
 
 #### Ranger
