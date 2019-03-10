@@ -27,8 +27,8 @@ if __name__ == '__main__':
     ambariMetricsApi.setCredentialsBasic("admin", "")
 
     # Test the Get 
-    ambariMetricsApi.getMetrics(metricNames="dfs.datanode.BlocksWritten", appId="datanode", hostname="sandbox-hdp.hortonworks.com", precision="seconds", startTime=int((time.time()-600)*1000), endTime=int(time.time()))
-    print(ambariMetricsApi)
+    # ambariMetricsApi.getMetrics(metricNames="dfs.datanode.BlocksWritten", appId="datanode", hostname="sandbox-hdp.hortonworks.com", precision="seconds", startTime=int((time.time()-600)*1000), endTime=int(time.time()))
+    # print(ambariMetricsApi)
 
     # Test the Put
     for line in fileinput.input(('-',)):
