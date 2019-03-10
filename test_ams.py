@@ -12,7 +12,7 @@ from module_utils.ambari_metrics import AmbariMetricsApi
 mntr_fields = ['zk_avg_latency','zk_max_latency','zk_min_latency','zk_packets_received','zk_packets_sent','zk_num_alive_connections','zk_outstanding_requests','zk_znode_count','zk_watch_count','zk_ephemerals_count','zk_approximate_data_size','zk_open_file_descriptor_count','zk_max_file_descriptor_count']
 wchc_fields = ['nifi', 'hadoop-ha', 'hiveserver2', 'hiveserver2-http', 'yarn-leader-election', 'ambari-metrics-cluster', 'oozie', 'ams-hbase-secure', 'kafka', 'hbase-secure', 'smartsense']
 fields = {"mntr": mntr_fields, "wchc": wchc_fields}
-type_prefix = {"mntr": "zookeeper.", "wchc": "zookeeper.zk_path"}
+type_prefix = {"mntr": "zookeeper.", "wchc": "zookeeper.zk_path."}
 patterns = {"mntr": re.compile("^(?P<key>\w+)\s+(?P<value>.*)$"), "wchc": re.compile("^\s*(?P<value>\d+)\s+(?P<key>.*)$")}
 
 if __name__ == '__main__':
