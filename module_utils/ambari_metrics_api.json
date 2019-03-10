@@ -1,0 +1,6 @@
+{
+    "api": {
+        "postMetrics": "/ws/v1/timeline/metrics",
+        "getMetrics": "/ws/v1/timeline/metrics?metricNames={{ metricNames }}&appId={{ appId }}&hostname={{ hostname }}&precision={{ precision }}&startTime={{ startTime }}&endTime={{ endTime }}"
+    }
+}

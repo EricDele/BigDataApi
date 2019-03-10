@@ -7,6 +7,7 @@ A BigData Api library for managing Ambari and Ranger
   - [How to use it in python mode](#how-to-use-it-in-python-mode)
     - [Initiate an object](#initiate-an-object)
       - [Ambari](#ambari)
+      - [Ambari Metrics](#ambari-metrics)
       - [Ranger](#ranger)
     - [Ranger Policies creation](#ranger-policies-creation)
       - [Hdfs](#hdfs)
@@ -15,13 +16,12 @@ A BigData Api library for managing Ambari and Ranger
       - [Kafka](#kafka)
       - [Knox](#knox)
       - [Yarn](#yarn)
+    - [Create custom metrics in ambari metrics](#create-custom-metrics-in-ambari-metrics)
+      - [Sending Zookeeper metrics to Ambari Metrics Collector](#sending-zookeeper-metrics-to-ambari-metrics-collector)
   - [How to use it in Ansible mode](#how-to-use-it-in-ansible-mode)
     - [Ranger_policy Ansible module](#rangerpolicy-ansible-module)
       - [Ranger_policy examples](#rangerpolicy-examples)
   - [Classes Tree](#classes-tree)
-  - [Api](#api)
-  - [Ranger](#ranger-1)
-  - [Ambari](#ambari-1)
   - [Author](#author)
   - [LICENSE](#license)
 
@@ -45,6 +45,7 @@ You can use it like an Ansible module too
 ## How to use it in python mode
 
 For testing see the [test.py](./test.py) file with many examples.
+For testing Ambari Metrics see the [test_ams.py](./test_ams.py) which coudl help you to send new custom metrics to AMS
 
 ### Initiate an object
 
@@ -56,6 +57,15 @@ ambariApi.setCredentialsBasic("admin", "hortonworks")
 result = ambariApi.getClusterName() # Get the cluster name
 print(ambariApi) # Will show you the result
 help(ambariApi) # Will show you the class methods
+```
+
+#### Ambari Metrics
+
+```Python
+ambariMetricsApi = AmbariMetricsApi("http", "localhost", "6188", "basic")
+ambariMetricsApi.setCredentialsBasic("admin", "")
+ambariMetricsApi.getMetrics(metricNames="dfs.datanode.BlocksWritten", appId="datanode", hostname="sandbox-hdp.hortonworks.com", precision="seconds", startTime=int((time.time()-600)*1000), endTime=int(time.time()))
+print(ambariMetricsApi)
 ```
 
 #### Ranger
@@ -130,6 +140,19 @@ rangerApi.postCreatePolicy(policyTemplateType = "yarn", serviceName = "Sandbox_y
                           accesses = ["submit-app","admin-queue"])
 ```
 
+### Create custom metrics in ambari  metrics
+
+For testing Ambari Metrics see the [test_ams.py](./test_ams.py) which coudl help you to send new custom metrics to AMS
+
+#### Sending Zookeeper metrics to Ambari Metrics Collector
+
+For sending output of **mntr** and **wchc** commands to AMS see below shell to use with [test_ams.py](./test_ams.py)
+
+```Shell
+[BigDataApi]> echo mntr | nc localhost 2181 | ./test_ams.py --type mntr --hostname sandbox-hdp.hortonworks.com
+[BigDataApi]> echo wchc | nc localhost 2181 | cur -d'/' | egrep -v "^0x|^$" | sort | uniq -c | sort -n | ./test_ams.py --type wchc --hostname sandbox-hdp.hortonworks.com
+```
+
 ## How to use it in Ansible mode
 
 For testing see the [test_ranger_policy.yml](./test_ranger_policy.yml) file with many examples.
@@ -175,200 +198,9 @@ This is how the Classes are organized
 |-- Api
     |-- Ranger
     |-- Ambari
+    |-- AmbariMetrics
 ```
 
-## Api
-```
-class Api(__builtin__.object)
- |  Api Class to be used by other class for calling API
- |  
- |  Methods defined here:
- |  
- |  __init__(self)
- |  
- |  __str__(self)
- |  
- |  callApi(self)
- |  
- |  checkReturnCode(self)
- |      Check the HTTP response code, see https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
- |  
- |  setAuthenticationMethode(self, authenticationMethode)
- |  
- |  setCompleteUrl(self, url, methode, authenticationMethode, headers, data)
- |  
- |  setCredentialsBasic(self, user, password)
- |  
- |  setData(self, data)
- |  
- |  setHeaders(self, headers)
- |  
- |  setMethode(self, methode)
- |  
- |  setUrl(self, url)
- |  
-
-```
-## Ranger
-
-```
-class RangerApi(api.Api)
- |  Ranger Api Class for managing Ranger
- |  
- |  Method resolution order:
- |      RangerApi
- |      api.Api
- |      __builtin__.object
- |  
- |  Methods defined here:
- |  
- |  __init__(self, protocol='http', hostname='', port='', authenticationMethode='basic')
- |  
- |  __str__(self)
- |  
- |  createUser(self, userName, firstName, lastName, emailAddress, description, password, groupIdList=[], userRoleList=[])
- |      create an internal user
- |      MAndatory values :
- |          "name","firstName","lastName","emailAddress","description","password","groupIdList","userRoleList"
- |  
- |  deleteDeletePolicyByServiceAndPolicyName(self, serviceName='', policyName='')
- |      Delete a policy by its name and service
- |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6
--RESTAPIsforServiceDefinition,ServiceandPolicyManagement-Deletepolicybyservice-nameandpolicy-name
- |  
- |  deleteUser(self, userNameOrId)
- |      delete a user
- |  
- |  getGroup(self, groupNameOrId)
- |      get the group by Name or Id
- |  
- |  getGroups(self)
- |      get the groups
- |  
- |  getPolicyByServiceAndPolicyName(self, serviceName, policyName)
- |      get a policy by Service and Policy Name
- |  
- |  getSearchPolicyInService(self, serviceName, policyName='')
- |      get a search on policy in a service
- |  
- |  getService(self, serviceNameOrId)
- |      get a service by Name or Id
- |  
- |  getServices(self, serviceType='')
- |      get the services
- |      
- |      serviceType string The service types(such as "hdfs","hive","hbase","knox","storm", "atlas")
- |  
- |  getUser(self, userNameOrId)
- |      get an user by Name or Id
- |  
- |  getUsers(self)
- |      get the users
- |  
- |  postApplyPolicy(self, **kwargs)
- |      post to update or create a policy
- |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-ApplyPolicy
- |      This request should not remove permissions, only add more permissions or create new ones
- |  
- |  postCreatePolicy(self, **kwargs)
- |      post to create a policy
- |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-CreatePolicy
- |      Arguments :
- |          policyTemplateType = one of ["hdfs", "yarn", "hbase", "hive", "knox", "storm", "solr", "kafka", "nifi", "atlas"] 
- |          serviceName = Name of the service
- |          policyName = Name of the policy
- |          description = description
- |          isRecursive = Is policy recursive
- |          users = Array of users
- |          groups = Array of groups
- |          resources = Resource affected by the policy ex :'["/lake/test"]', PolicyTemplateType dependent
- |          accesses = Permissions poistionned on the resource, PolicyTemplateType dependent
- |  
- |  putUpdatePolicyByServiceAndPolicyName(self, **kwargs)
- |      post to update or create a policy
- |      https://cwiki.apache.org/confluence/display/RANGER/Apache+Ranger+0.6+-+REST+APIs+for+Service+Definition%2C+Service+and+Policy+Management#ApacheRanger0.6-RESTAPIsforServiceDefinition,ServiceandPolicyManagement-UpdatePolicybyservice-nameandpolicy-name
- |      This request should remove permissions
- |  
- |  setRoleForUser(self, userNameOrId, role='ROLE_USER')
- |      Set a user with an admin role
- |      Mandatory values :
- |            "id", "name", "description","userRoleList": ["ROLE_SYS_ADMIN" OR "ROLE_USER"]
- |  
-
-
-```
-
-## Ambari
-```
-class AmbariApi(api.Api)
- |  Ambari Api Class for managing Ambari
- |  
- |  Method resolution order:
- |      AmbariApi
- |      api.Api
- |      __builtin__.object
- |  
- |  Methods defined here:
- |  
- |  __init__(self, protocol='http', hostname='', port='', authenticationMethode='basic')
- |  
- |  __str__(self)
- |  
- |  getAdminViewVersion(self)
- |      get the Admin View Version and set the corresponding headers
- |  
- |  getClusterName(self)
- |      get the cluster name and call the setClusterName methode
- |  
- |  getClusterServices(self)
- |      get the cluster sercvice status
- |  
- |  getClusterStaleConfig(self)
- |      get the cluster service having stale config
- |  
- |  getClusterStatus(self)
- |      get the cluster sercvice status
- |  
- |  getQueuesFromAmbari(self)
- |      get the capacity scheduler queues from Ambari
- |  
- |  getRequestStatus(self, requestId)
- |      get the status of a request
- |  
- |  getRequests(self)
- |      get all the requests
- |  
- |  getResourceManagerHosts(self)
- |      get the cluster resource manager hosts
- |  
- |  postAllServicesCheck(self)
- |      post all services check
- |  
- |  putAbortStuckRequest(self, requestId)
- |      put a request abort for a stuck request
- |  
- |  putClusterServiceStart(self, serviceName)
- |      put a start for a service
- |  
- |  putClusterServiceStartAll(self)
- |      put a start for all services
- |      retrun an array of requestsId
- |  
- |  putClusterServiceStop(self, serviceName)
- |      put a stop for a service
- |  
- |  putClusterServiceStopAll(self)
- |      put a stop for all services
- |      retrun an array of requestsId
- |  
- |  setClusterName(self, clusterName)
- |      set the cluster name and update the api path replaicng the mask by the real name
- |  
- |  waitUntilRequestsCompleted(self, requestId)
- |      Will wait until all the requests are completed
- |  
-
-```
 ## Author
 
 Eric Deleforterie
