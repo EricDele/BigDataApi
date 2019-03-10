@@ -152,7 +152,7 @@ For sending output of **mntr** and **wchc** commands to AMS see below shell to u
 
 ```Shell
 [BigDataApi]> echo mntr | nc localhost 2181 | ./test_ams.py --type mntr --hostname sandbox-hdp.hortonworks.com
-[BigDataApi]> echo wchc | nc localhost 2181 | cur -d'/' | egrep -v "^0x|^$" | sort | uniq -c | sort -n | ./test_ams.py --type wchc --hostname sandbox-hdp.hortonworks.com
+[BigDataApi]> echo wchc | nc localhost 2181 | cut -d'/' -f2 | egrep -v "^0x|^$" | sort | uniq -c | sort -n | ./test_ams.py --type wchc --hostname sandbox-hdp.hortonworks.com
 ```
 
 ## How to use it in Ansible mode
